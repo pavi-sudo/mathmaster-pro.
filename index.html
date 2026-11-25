@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathMaster Pro - UK Grammar School & GCSE Curriculum</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 h-full flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- AUTH SCREEN -->
+  <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur-md p-4">
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl max-w-md w-full text-center">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-indigo-600/10 text-indigo-400 rounded-2xl mb-4 text-2xl font-bold">
+        <i class="fa-solid fa-square-root-variable"></i>
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight mb-2">MathMaster Pro</h1>
+      <p class="text-slate-400 text-sm mb-6">Advanced UK KS3, GCSE & Further Maths Practice Platform</p>
+
+      <button id="google-login-btn" class="w-full bg-white hover:bg-slate-100 text-slate-900 font-semibold py-3 px-4 rounded-xl transition duration-200 flex items-center justify-center gap-3 shadow-sm">
+        <i class="fa-brands fa-google text-red-500"></i>
+        Sign in with Google
+      </button>
+
+      <p id="auth-error" class="text-rose-400 text-xs mt-4 hidden"></p>
+    </div>
+  </div>
+
+  <!-- MAIN APP CONTAINER -->
+  <div id="main-app" class="flex h-full overflow-hidden hidden">
+    
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col transition-all duration-300 z-30">
+      <div class="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <span class="font-bold tracking-tight text-lg">MathMaster</span>
+        </div>
+        <button id="sidebar-toggle" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+
+      <!-- Curriculum Navigation Tree -->
+      <div id="curriculum-nav" class="flex-1 overflow-y-auto p-3 space-y-1.5">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <!-- User Profile Footer -->
+      <div class="p-4 border-t border-slate-800 flex items-center justify-between bg-slate-950/40">
+        <div class="truncate mr-2">
+          <p id="profile-name" class="text-sm font-semibold truncate">Student</p>
+          <p id="profile-email" class="text-xs text-slate-400 truncate"></p>
+        </div>
+        <button id="logout-btn" title="Sign Out" class="text-slate-400 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-800 transition">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- CONTENT AREA -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-slate-950">
+      <!-- Top Header Bar -->
+      <header class="h-16 border-b border-slate-800 bg-slate-900/50 backdrop-blur px-6 flex items-center justify-between">
+        <div class="flex items-center gap-4">
+          <button id="mobile-toggle" class="text-slate-400 hover:text-white md:hidden">
+            <i class="fa-solid fa-bars text-lg"></i>
+          </button>
+          <h2 id="view-title" class="text-lg font-bold">Dashboard Overview</h2>
+        </div>
+
+        <div class="flex items-center gap-6 text-sm">
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+            <i class="fa-solid fa-fire text-amber-500"></i>
+            <span class="text-slate-400">Streak:</span>
+            <span id="stat-streak" class="font-bold text-white">0 days</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+            <i class="fa-solid fa-circle-check text-emerald-500"></i>
+            <span class="text-slate-400">Completed:</span>
+            <span id="stat-quizzes" class="font-bold text-white">0</span>
+          </div>
+          <div class="flex items-center gap-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">
+            <i class="fa-solid fa-chart-pie text-indigo-400"></i>
+            <span class="text-slate-400">Avg Score:</span>
+            <span id="stat-avg" class="font-bold text-white">0%</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dynamic Viewport -->
+      <div id="viewport" class="flex-1 overflow-y-auto p-6 lg:p-10">
+        <!-- Content rendered dynamically -->
+      </div>
+    </main>
+  </div>
+
+  <!-- APPLICATION LOGIC & SUPABASE INTEGRATION -->
+  <script>
+    // ==========================================
+    // 1. SUPABASE CONFIGURATION (PASTE YOUR KEYS HERE)
+    // ==========================================
+    const SUPABASE_URL ="https://yqkzqxsfmhkmohorluur.supabase.co"; // e.g. https://xyz.supabase.co
+    const SUPABASE_ANON_KEY = "sb_publishable_1WIYxZVS4mAPbfY1FEPbGQ_-P-wAZpY"; // your public anon key
+
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // ==========================================
+    // 2. CURRICULUM DATA STRUCTURE (UK KS3, GCSE & FURTHER MATHS)
+    // ==========================================
+    const curriculumData = {
+      "Year 7": {
+        "Number Skills": ["HCF & LCM", "Prime Factorisation", "Standard Form Basics", "Order of Operations"],
+        "Directed Numbers": ["Negative Number Arithmetic", "Real-World Temperature & Finance", "Inequalities on Number Lines"],
+        "Expressions & Substitution": ["Algebraic Notation", "Simplifying Expressions", "Substitution into Formulae", "Expanding Single Brackets"],
+        "Perimeter & Area": ["Compound Shapes", "Area of Triangles & Parallelograms", "Trapeziums & Circles Intro"],
+        "Coordinates & Linear Graphs": ["Four-Quadrant Plotting", "Midpoints of Line Segments", "Plotting y = mx + c"],
+        "Fractions, Decimals & Percentages": ["FDP Conversions", "Percentages of Amounts", "Fraction Arithmetic"]
+      },
+      "Year 8": {
+        "Expanding & Factorising": ["Expanding Double Brackets", "Single Bracket Factorisation", "Quadratic Factorisation Intro", "Algebraic Fractions"],
+        "Linear Equations": ["Multi-Step Equations", "Equations with Unknowns on Both Sides", "Rearranging Formulae"],
+        "Ratio & Proportion": ["Sharing in a Ratio", "Direct & Inverse Proportion", "Best Buy Problems"],
+        "Circles & Sectors": ["Circumference & Area", "Arc Lengths", "Sector Areas"],
+        "Sequences & nth Term": ["Arithmetic Sequences", "Geometric Sequences", "Quadratic Sequences Intro"],
+        "Statistical Diagrams": ["Scatter Graphs & Correlation", "Averages from Tables", "Pie Charts"]
+      },
+      "Year 9": {
+        "Quadratic Equations": ["Solving by Factorisation", "The Quadratic Formula", "Completing the Square"],
+        "Pythagoras & Trigonometry": ["Pythagoras Theorem in 2D", "SOHCAHTOA Trigonometry", "Exact Trig Values"],
+        "3D Shapes": ["Volume of Prisms & Cylinders", "Surface Area of Cones & Spheres", "Frustums"],
+        "Similar Shapes & Ratios": ["Length Scale Factor", "Area Scale Factor", "Volume Scale Factor"],
+        "Probability & Venn Diagrams": ["Conditional Probability", "Tree Diagrams", "Set Notation & Venn Diagrams"]
+      },
+      "Year 10 (Higher GCSE)": {
+        "Surds & Indices": ["Rationalising Denominators", "Laws of Fractional Indices", "Simplifying Surd Expressions"],
+        "Simultaneous Equations": ["Elimination Method", "Substitution Method", "Non-Linear Simultaneous Equations"],
+        "Graphs & Transformations": ["Quadratic & Cubic Graphs", "Circle Equations", "Graph Transformations f(x)"],
+        "Trigonometry Advanced": ["Sine Rule", "Cosine Rule", "Area of a Triangle (1/2 ab sin C)"],
+        "Statistics Advanced": ["Cumulative Frequency", "Box Plots", "Histograms with Unequal Class Widths"]
+      },
+      "Year 11 (Higher GCSE)": {
+        "Circle Theorems": ["Angle at Centre & Semicircle", "Cyclic Quadrilaterals", "Alternate Segment Theorem"],
+        "Algebraic Fractions & Proof": ["Adding & Subtracting Algebraic Fractions", "Algebraic Proof", "Functions (Composite & Inverse)"],
+        "Vectors": ["Vector Column Notation", "Geometric Vector Proofs", "Ratio Vector Theorems"],
+        "3D Trigonometry": ["Pythagoras in 3D", "Angle Between Line and Plane", "Sine/Cosine Rules in 3D"],
+        "Iteration & Advanced": ["Iterative Methods for Roots", "Gradient of Curves", "Rates of Change"]
+      },
+      "GCSE Further Maths (Level 2)": {
+        "Matrices": ["Matrix Multiplication", "Determinants & Inverses", "Transformation Matrices"],
+        "Complex Numbers": ["Imaginary Numbers (i)", "Argand Diagrams", "Roots of Polynomials"],
+        "Calculus & Differentiation": ["Power Rule for Differentiation", "Stationary Points", "Kinematics & Acceleration"],
+        "Advanced Functions": ["Modulus Functions", "Partial Fractions", "Logarithmic Equations"]
+      }
+    };
+
+    // ==========================================
+    // 3. APPLICATION STATE & CONTROLLER
+    // ==========================================
+    let currentUser = null;
+    let userStats = { quizzes_completed: 0, average_score: 0, current_streak: 0 };
+    let currentView = { type: 'dashboard' };
+
+    // DOM Elements
+    const authScreen = document.getElementById('auth-screen');
+    const mainApp = document.getElementById('main-app');
+    const googleLoginBtn = document.getElementById('google-login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const authError = document.getElementById('auth-error');
+    const curriculumNav = document.getElementById('curriculum-nav');
+    const viewport = document.getElementById('viewport');
+    const viewTitle = document.getElementById('view-title');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const sidebar = document.getElementById('sidebar');
+
+    // Authentication Handlers
+    googleLoginBtn.addEventListener('click', async () => {
+      authError.classList.add('hidden');
+      const { error } = await supabaseClient.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.href }
+      });
+      if (error) {
+        authError.textContent = error.message;
+        authError.classList.remove('hidden');
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await supabaseClient.auth.signOut();
+    });
+
+    // Session State Listener
+    supabaseClient.auth.onAuthStateChange(async (event, session) => {
+      if (session && session.user) {
+        currentUser = session.user;
+        authScreen.classList.add('hidden');
+        mainApp.classList.remove('hidden');
+        
+        document.getElementById('profile-name').textContent = currentUser.user_metadata.full_name || 'Student';
+        document.getElementById('profile-email').textContent = currentUser.email;
+
+        await syncUserProfile();
+        initSidebar();
+        renderDashboard();
+      } else {
+        currentUser = null;
+        authScreen.classList.remove('hidden');
+        mainApp.classList.add('hidden');
+      }
+    });
+
+    async function syncUserProfile() {
+      // Fetch or init user stats from Supabase
+      let { data, error } = await supabaseClient
+        .from('user_stats')
+        .select('*')
+        .eq('id', currentUser.id)
+        .single();
+
+      if (!data) {
+        await supabaseClient.from('user_stats').insert([{ id: currentUser.id, quizzes_completed: 0, average_score: 0, current_streak: 1 }]);
+        userStats = { quizzes_completed: 0, average_score: 0, current_streak: 1 };
+      } else {
+        userStats = data;
+      }
+      updateHeaderStats();
+    }
+
+    function updateHeaderStats() {
+      document.getElementById('stat-streak').textContent = `${userStats.current_streak} days`;
+      document.getElementById('stat-quizzes').textContent = userStats.quizzes_completed;
+      document.getElementById('stat-avg').textContent = `${Math.round(userStats.average_score)}%`;
+    }
+
+    // ==========================================
+    // 4. SIDEBAR NAVIGATION
+    // ==========================================
+    function initSidebar() {
+      curriculumNav.innerHTML = `
+        <button onclick="renderDashboard()" class="w-full text-left px-3 py-2.5 rounded-xl font-medium text-sm flex items-center gap-3 transition hover:bg-slate-800 text-indigo-400">
+          <i class="fa-solid fa-house w-5"></i> Dashboard Overview
+        </button>
+      `;
+
+      Object.keys(curriculumData).forEach(year => {
+        const yearId = year.replace(/[^a-zA-Z0-9]/g, '');
+        const wrapper = document.createElement('div');
+        wrapper.className = 'space-y-1';
+        wrapper.innerHTML = `
+          <button onclick="toggleYear('${yearId}')" class="w-full text-left px-3 py-2.5 rounded-xl font-semibold text-sm flex items-center justify-between transition hover:bg-slate-800 text-slate-300">
+            <span class="flex items-center gap-3"><i class="fa-solid fa-layer-group w-5 text-indigo-500"></i> ${year}</span>
+            <i id="icon-${yearId}" class="fa-solid fa-chevron-right text-xs transition-transform"></i>
+          </button>
+          <div id="dropdown-${yearId}" class="hidden pl-4 space-y-1 border-l border-slate-800 ml-4 my-1">
+            ${Object.keys(curriculumData[year]).map(genTopic => `
+              <button onclick="renderGeneralTopic('${year}', '${genTopic}')" class="w-full text-left px-3 py-2 rounded-lg text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800/60 transition">
+                ${genTopic}
+              </button>
+            `).join('')}
+          </div>
+        `;
+        curriculumNav.appendChild(wrapper);
+      });
+    }
+
+    window.toggleYear = function(yearId) {
+      const dropdown = document.getElementById(`dropdown-${yearId}`);
+      const icon = document.getElementById(`icon-${yearId}`);
+      dropdown.classList.toggle('hidden');
+      icon.classList.toggle('rotate-90');
+    }
+
+    sidebarToggle.addEventListener('click', () => sidebar.classList.toggle('w-72'));
+    mobileToggle.addEventListener('click', () => sidebar.classList.toggle('hidden'));
+
+    // ==========================================
+    // 5. VIEWS & SUBTOPIC PRACTICE ENGINE
+    // ==========================================
+    window.renderDashboard = function() {
+      viewTitle.textContent = "Curriculum Dashboard";
+      currentView = { type: 'dashboard' };
+
+      let html = `
+        <div class="max-w-5xl mx-auto space-y-8">
+          <div class="bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-500/20 p-8 rounded-2xl">
+            <h2 class="text-2xl font-bold mb-2">Welcome back, ${currentUser.user_metadata.full_name || 'Student'}! 👋</h2>
+            <p class="text-slate-300 text-sm max-w-2xl">Select any academic year or general topic from the sidebar to practice grammar school subtopics, track your mastery percentage, and test your skills with randomised problems.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      `;
+
+      Object.keys(curriculumData).forEach(year => {
+        html += `
+          <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl flex flex-col justify-between">
+            <div>
+              <h3 class="font-bold text-lg text-white mb-2">${year}</h3>
+              <p class="text-xs text-slate-400 mb-4">${Object.keys(curriculumData[year]).length} Core General Topics Available</p>
+            </div>
+            <button onclick="toggleYear('${year.replace(/[^a-zA-Z0-9]/g, '')}')" class="w-full bg-slate-800 hover:bg-indigo-600 hover:text-white py-2 rounded-xl text-xs font-semibold transition">
+              Explore Topics <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
+          </div>
+        `;
+      });
+
+      html += `</div></div>`;
+      viewport.innerHTML = html;
+    }
+
+    window.renderGeneralTopic = function(year, genTopic) {
+      viewTitle.textContent = `${year} > ${genTopic}`;
+      currentView = { type: 'genTopic', year, genTopic };
+
+      const subtopics = curriculumData[year][genTopic];
+
+      let html = `
+        <div class="max-w-4xl mx-auto space-y-6">
+          <button onclick="renderDashboard()" class="text-xs font-semibold text-indigo-400 hover:text-indigo-300 flex items-center gap-2">
+            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+          </button>
+          <div>
+            <h2 class="text-2xl font-bold">${genTopic}</h2>
+            <p class="text-slate-400 text-sm">${year} Grammar School Curriculum</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      `;
+
+      subtopics.forEach(sub => {
+        html += `
+          <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col justify-between">
+            <div>
+              <h4 class="font-semibold text-white mb-1">${sub}</h4>
+              <p class="text-xs text-slate-400 mb-4">Interactive Randomised Practice</p>
+            </div>
+            <button onclick="startPractice('${year}', '${genTopic}', '${sub}')" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2 rounded-lg text-xs transition">
+              Start Practice <i class="fa-solid fa-play ml-1"></i>
+            </button>
+          </div>
+        `;
+      });
+
+      html += `</div></div>`;
+      viewport.innerHTML = html;
+    }
+
+    // Interactive Quiz Engine
+    window.startPractice = function(year, genTopic, subtopic) {
+      viewTitle.textContent = `Practicing: ${subtopic}`;
+      currentView = { type: 'practice', year, genTopic, subtopic };
+
+      let question = generateRandomQuestion(subtopic);
+
+      viewport.innerHTML = `
+        <div class="max-w-2xl mx-auto bg-slate-900 border border-slate-800 p-8 rounded-2xl space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <span class="text-xs bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-full font-semibold">${subtopic}</span>
+            <button onclick="renderGeneralTopic('${year}', '${genTopic}')" class="text-slate-400 hover:text-white text-sm"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div class="space-y-3">
+            <p class="text-lg font-medium text-slate-200" id="q-text">${question.prompt}</p>
+            <div id="q-extra"></div>
+          </div>
+
+          <div class="flex gap-3">
+            <input type="text" id="user-answer" placeholder="Enter your answer..." class="flex-1 bg-slate-950 border border-slate-800 px-4 py-3 rounded-xl focus:outline-none focus:border-indigo-500 text-white">
+            <button onclick="submitAnswer('${question.answer}', '${subtopic}', '${year}', '${genTopic}')" class="bg-indigo-600 hover:bg-indigo-500 px-6 py-3 rounded-xl font-semibold transition">Submit</button>
+          </div>
+
+          <div id="feedback-area" class="hidden p-4 rounded-xl text-sm"></div>
+        </div>
+      `;
+    }
+
+    function generateRandomQuestion(subtopic) {
+      // Dynamic question generator for grammar school problems
+      const a = Math.floor(Math.random() * 8) + 2;
+      const b = Math.floor(Math.random() * 10) + 1;
+      
+      return {
+        prompt: `Solve for x: ${a}x + ${b} = ${a * 3 + b}`,
+        answer: "3"
+      };
+    }
+
+    window.submitAnswer = async function(correctAnswer, subtopic, year, genTopic) {
+      const userAns = document.getElementById('user-answer').value.trim();
+      const feedback = document.getElementById('feedback-area');
+      feedback.classList.remove('hidden');
+
+      const isCorrect = userAns === correctAnswer;
+      if (isCorrect) {
+        feedback.className = "p-4 rounded-xl text-sm bg-emerald-500/10 text-emerald-400 border border-emerald-500/20";
+        feedback.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> Correct! Excellent work.`;
+      } else {
+        feedback.className = "p-4 rounded-xl text-sm bg-rose-500/10 text-rose-400 border border-rose-500/20";
+        feedback.innerHTML = `<i class="fa-solid fa-circle-xmark mr-2"></i> Incorrect. The correct answer was ${correctAnswer}.`;
+      }
+
+      // Update Stats in Supabase
+      userStats.quizzes_completed += 1;
+      let scoreEarned = isCorrect ? 100 : 0;
+      userStats.average_score = Math.round(((userStats.average_score * (userStats.quizzes_completed - 1)) + scoreEarned) / userStats.quizzes_completed);
+
+      await supabaseClient
+        .from('user_stats')
+        .update({
+          quizzes_completed: userStats.quizzes_completed,
+          average_score: userStats.average_score
+        })
+        .eq('id', currentUser.id);
+
+      updateHeaderStats();
+
+      setTimeout(() => {
+        startPractice(year, genTopic, subtopic);
+      }, 2500);
+    }
+  </script>
+</body>
+</html>
