@@ -183,7 +183,7 @@
       authError.classList.add('hidden');
       const { error } = await supabaseClient.auth.signInWithOAuth({
         provider: 'google',
-        options: { redirectTo: window.location.href }
+        options: { redirectTo: 'https://pavi-sudo.github.io/mathmaster-pro/' }
       });
       if (error) {
         authError.textContent = error.message;
