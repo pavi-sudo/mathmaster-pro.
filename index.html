@@ -112,51 +112,245 @@
     // ==========================================
     // 2. CURRICULUM DATA STRUCTURE (UK KS3, GCSE & FURTHER MATHS)
     // ==========================================
-    const curriculumData = {
-      "Year 7": {
-        "Number Skills": ["HCF & LCM", "Prime Factorisation", "Standard Form Basics", "Order of Operations"],
-        "Directed Numbers": ["Negative Number Arithmetic", "Real-World Temperature & Finance", "Inequalities on Number Lines"],
-        "Expressions & Substitution": ["Algebraic Notation", "Simplifying Expressions", "Substitution into Formulae", "Expanding Single Brackets"],
-        "Perimeter & Area": ["Compound Shapes", "Area of Triangles & Parallelograms", "Trapeziums & Circles Intro"],
-        "Coordinates & Linear Graphs": ["Four-Quadrant Plotting", "Midpoints of Line Segments", "Plotting y = mx + c"],
-        "Fractions, Decimals & Percentages": ["FDP Conversions", "Percentages of Amounts", "Fraction Arithmetic"]
-      },
-      "Year 8": {
-        "Expanding & Factorising": ["Expanding Double Brackets", "Single Bracket Factorisation", "Quadratic Factorisation Intro", "Algebraic Fractions"],
-        "Linear Equations": ["Multi-Step Equations", "Equations with Unknowns on Both Sides", "Rearranging Formulae"],
-        "Ratio & Proportion": ["Sharing in a Ratio", "Direct & Inverse Proportion", "Best Buy Problems"],
-        "Circles & Sectors": ["Circumference & Area", "Arc Lengths", "Sector Areas"],
-        "Sequences & nth Term": ["Arithmetic Sequences", "Geometric Sequences", "Quadratic Sequences Intro"],
-        "Statistical Diagrams": ["Scatter Graphs & Correlation", "Averages from Tables", "Pie Charts"]
-      },
-      "Year 9": {
-        "Quadratic Equations": ["Solving by Factorisation", "The Quadratic Formula", "Completing the Square"],
-        "Pythagoras & Trigonometry": ["Pythagoras Theorem in 2D", "SOHCAHTOA Trigonometry", "Exact Trig Values"],
-        "3D Shapes": ["Volume of Prisms & Cylinders", "Surface Area of Cones & Spheres", "Frustums"],
-        "Similar Shapes & Ratios": ["Length Scale Factor", "Area Scale Factor", "Volume Scale Factor"],
-        "Probability & Venn Diagrams": ["Conditional Probability", "Tree Diagrams", "Set Notation & Venn Diagrams"]
-      },
-      "Year 10 (Higher GCSE)": {
-        "Surds & Indices": ["Rationalising Denominators", "Laws of Fractional Indices", "Simplifying Surd Expressions"],
-        "Simultaneous Equations": ["Elimination Method", "Substitution Method", "Non-Linear Simultaneous Equations"],
-        "Graphs & Transformations": ["Quadratic & Cubic Graphs", "Circle Equations", "Graph Transformations f(x)"],
-        "Trigonometry Advanced": ["Sine Rule", "Cosine Rule", "Area of a Triangle (1/2 ab sin C)"],
-        "Statistics Advanced": ["Cumulative Frequency", "Box Plots", "Histograms with Unequal Class Widths"]
-      },
-      "Year 11 (Higher GCSE)": {
-        "Circle Theorems": ["Angle at Centre & Semicircle", "Cyclic Quadrilaterals", "Alternate Segment Theorem"],
-        "Algebraic Fractions & Proof": ["Adding & Subtracting Algebraic Fractions", "Algebraic Proof", "Functions (Composite & Inverse)"],
-        "Vectors": ["Vector Column Notation", "Geometric Vector Proofs", "Ratio Vector Theorems"],
-        "3D Trigonometry": ["Pythagoras in 3D", "Angle Between Line and Plane", "Sine/Cosine Rules in 3D"],
-        "Iteration & Advanced": ["Iterative Methods for Roots", "Gradient of Curves", "Rates of Change"]
-      },
-      "GCSE Further Maths (Level 2)": {
-        "Matrices": ["Matrix Multiplication", "Determinants & Inverses", "Transformation Matrices"],
-        "Complex Numbers": ["Imaginary Numbers (i)", "Argand Diagrams", "Roots of Polynomials"],
-        "Calculus & Differentiation": ["Power Rule for Differentiation", "Stationary Points", "Kinematics & Acceleration"],
-        "Advanced Functions": ["Modulus Functions", "Partial Fractions", "Logarithmic Equations"]
-      }
-    };
+const curriculumData = {
+  "Year 7": {
+    "Number Skills & Place Value": [
+      "Integers & Decimals",
+      "Fractions, Decimals & Percentages",
+      "Prime Factorisation (HCF & LCM)",
+      "Order of Operations (BIDMAS)",
+      "Estimation & Rounding (Significant Figures)",
+      "Multiples, Factors & Primes",
+      "Standard Index Form Intro",
+      "Place Value up to Billions",
+      "Mental Arithmetic Strategies",
+      "Divisibility Rules"
+    ],
+    "Directed Numbers & Finance": [
+      "Negative Number Arithmetic",
+      "Real-World Temperature Calculations",
+      "Debt, Credit & Bank Balances",
+      "Inequalities on Number Lines",
+      "Basic Financial Literacy & Budgeting",
+      "Profit & Loss Calculations",
+      "Simple Interest Introduction",
+      "Currency Exchange Rates",
+      "Unit Pricing & Best Value"
+    ],
+    "Expressions & Substitution": [
+      "Algebraic Notation Rules",
+      "Simplifying Expressions (Collecting Like Terms)",
+      "Substitution into Linear Formulae",
+      "Expanding Single Brackets",
+      "Writing Formulae from Words",
+      "Function Machines & Inverse Operations",
+      "Evaluating Expressions with Negatives",
+      "Forming Algebraic Expressions"
+    ],
+    "Perimeter & Area": [
+      "Perimeter of Rectilinear Shapes",
+      "Area of Rectangles and Squares",
+      "Area of Triangles",
+      "Area of Parallelograms",
+      "Area of Trapeziums",
+      "Introduction to Circles (Parts of a Circle)",
+      "Compound Shapes & Composite Areas",
+      "Surface Area Intro via Nets",
+      "Units of Area Conversion"
+    ],
+    "Coordinates & Linear Graphs": [
+      "Four-Quadrant Plotting",
+      "Identifying Coordinates & Points",
+      "Midpoints of Line Segments",
+      "Plotting Linear Graphs from Tables of Values",
+      "Recognising Horizontal Lines (y = c)",
+      "Recognising Vertical Lines (x = c)",
+      "Plotting y = mx + c Basics",
+      "Reading Gradients from Graphs"
+    ],
+    "Fractions, Decimals & Percentages": [
+      "FDP Conversions (Interconverting forms)",
+      "Percentages of Amounts (Without Calculator)",
+      "Percentage Increase and Decrease Intro",
+      "Fraction Arithmetic (Adding & Subtracting with Common/Different Denominators)",
+      "Multiplying Fractions",
+      "Dividing Fractions",
+      "Fractions of Quantities & Word Problems"
+    ]
+  },
+  "Year 8": {
+    "Expanding & Factorising": [
+      "Expanding Double Brackets (FOIL & Grid Method)",
+      "Single Bracket Factorisation",
+      "Quadratic Factorisation Intro (x^2 + bx + c)",
+      "Algebraic Fractions Introduction",
+      "Simplifying Algebraic Fractions by Cancelling",
+      "Factorising by Taking Out Common Monomials",
+      "Advanced Bracket Expansion"
+    ],
+    "Linear Equations": [
+      "Multi-Step Equations with Integers & Decimals",
+      "Equations with Unknowns on Both Sides",
+      "Equations Involving Brackets",
+      "Rearranging Formulae (Making a variable the subject)",
+      "Forming and Solving Equations from Perimeter & Angles",
+      "Algebraic Word Problems & Modelling"
+    ],
+    "Ratio & Proportion": [
+      "Sharing Quantities in a Given Ratio",
+      "Ratio to Fractions and Percentages Conversion",
+      "Direct Proportion Word Problems",
+      "Inverse Proportion Introduction",
+      "Best Buy Value for Money Problems",
+      "Unitary Method & Scale Factors",
+      "Map Scales & Blueprint Calculations"
+    ],
+    "Circles & Sectors": [
+      "Circumference of Circles (pi * d)",
+      "Area of Circles (pi * r^2)",
+      "Arc Length Calculations",
+      "Sector Area Calculations",
+      "Compound Shapes Involving Semicircles & Quadrants",
+      "Exact Values Involving Pi"
+    ],
+    "Sequences & nth Term": [
+      "Generating Linear & Non-Linear Sequences",
+      "Finding the nth Term of Linear Sequences",
+      "Geometric Sequences Intro (Common Ratio)",
+      "Quadratic Sequences Intro (Second Differences)",
+      "Fibonacci-Type Sequences",
+      "Spatial Patterns and Graphical Sequence Generalisation"
+    ],
+    "Statistical Diagrams": [
+      "Scatter Graphs & Correlation (Positive, Negative, None)",
+      "Lines of Best Fit & Interpolation/Extrapolation",
+      "Averages from Frequency Tables (Estimated Mean)",
+      "Pie Charts Construction & Interpretation",
+      "Comparing Distributions Using Averages and Range",
+      "Identifying Misleading Statistical Graphs"
+    ]
+  },
+  "Year 9": {
+    "Quadratic Equations": [
+      "Solving Quadratic Equations by Factorisation",
+      "The Quadratic Formula Derivation and Application",
+      "Completing the Square Introduction",
+      "Graphical Solutions to Quadratic Equations",
+      "Real-World Projectile Problems via Quadratics",
+      "Finding Roots and Turning Points Algebraically"
+    ],
+    "Pythagoras & Trigonometry": [
+      "Pythagoras Theorem in 2D (Finding Hypotenuse & Shorter Sides)",
+      "SOHCAHTOA Trigonometry (Finding Missing Sides)",
+      "SOHCAHTOA Trigonometry (Finding Missing Angles)",
+      "Exact Trig Values (0, 30, 45, 60, 90 degrees)",
+      "Angles of Elevation and Depression",
+      "Multi-Step 2D Trigonometry & Pythagoras Problems"
+    ],
+    "3D Shapes & Mensuration": [
+      "Volume of Prisms & Cylinders",
+      "Surface Area of Prisms & Cylinders",
+      "Surface Area & Volume of Cones",
+      "Surface Area & Volume of Spheres",
+      "Frustums and Composite 3D Solids",
+      "Density, Mass, and Volume Calculations & Unit Conversions"
+    ],
+    "Similar Shapes & Ratios": [
+      "Length Scale Factor (LSF)",
+      "Area Scale Factor (ASF = LSF^2)",
+      "Volume Scale Factor (VSF = LSF^3)",
+      "Congruence Criteria (SSS, SAS, ASA, RHS)",
+      "Similar Triangles Proofs and Calculations",
+      "Enlargement with Negative Scale Factors"
+    ],
+    "Probability & Venn Diagrams": [
+      "Conditional Probability Introduction",
+      "Tree Diagrams (Independent & Dependent Events)",
+      "Set Notation (Union, Intersection, Complement) & Venn Diagrams",
+      "Sample Space Maximisation",
+      "Experimental vs. Theoretical Probability",
+      "Expected Frequency Calculations"
+    ]
+  },
+  "Year 10 (Higher GCSE)": {
+    "Surds & Indices": [
+      "Rationalising Denominators (Single and Binomial Surds)",
+      "Laws of Fractional Indices (a^(m/n))",
+      "Simplifying Surd Expressions (sqrt(a) * sqrt(b))",
+      "Expanding and Multiplying Surds",
+      "Negative Fractional Indices Operations",
+      "Solving Complex Index Equations"
+    ],
+    "Simultaneous Equations": [
+      "Elimination Method for Linear Systems",
+      "Substitution Method for Linear Systems",
+      "Non-Linear Simultaneous Equations (Linear & Quadratic)",
+      "Graphical Simultaneous Equations",
+      "Contextual Word Problems Leading to Simultaneous Equations"
+    ],
+    "Graphs & Transformations": [
+      "Quadratic Graphs (Roots, Intercepts, Turning Points)",
+      "Cubic & Reciprocal Graphs Analysis",
+      "Circle Equations (x^2 + y^2 = r^2) & Tangents to Circles",
+      "Graph Transformations f(x+a), af(x), -f(x), f(-x)",
+      "Exponential Graphs and Growth/Decay Curves"
+    ],
+    "Trigonometry Advanced": [
+      "The Sine Rule (Sides and Angles)",
+      "The Cosine Rule (Sides and Angles)",
+      "Area of a Triangle Formula (1/2 ab sin C)",
+      "The Ambiguous Case of the Sine Rule",
+      "Bearings with Advanced Trigonometry",
+      "3D Trigonometry Calculations"
+    ],
+    "Statistics Advanced": [
+      "Cumulative Frequency Diagrams (Median, Quartiles, IQR)",
+      "Box Plots Construction and Interpretation",
+      "Histograms with Unequal Class Widths (Frequency Density)",
+      "Sampling Methods (Stratified, Random, Systematic)",
+      "Population Estimation via Capture-Recapture"
+    ]
+  },
+  "Year 11 (Higher GCSE & Further Maths)": {
+    "Circle Theorems": [
+      "Angle at Centre is Twice Angle at Circumference",
+      "Angles in the Same Segment are Equal",
+      "Angle in a Semicircle is 90 Degrees",
+      "Opposite Angles in a Cyclic Quadrilateral Add to 180",
+      "Alternate Segment Theorem",
+      "Tangent-Radius Properties & Perpendicular Bisectors",
+      "Tangents from an External Point are Equal Length"
+    ],
+    "Algebraic Fractions & Proof": [
+      "Adding and Subtracting Algebraic Fractions with Quadratic Denominators",
+      "Multiplying and Dividing Algebraic Fractions",
+      "Algebraic Proof (Even/Odd numbers, divisibility, identities)",
+      "Composite Functions fg(x) and gf(x)",
+      "Inverse Functions f^-1(x) and Domain/Range Restrictions"
+    ],
+    "Vectors": [
+      "Vector Column Notation and Magnitude Calculations",
+      "Addition, Subtraction and Scalar Multiplication of Vectors",
+      "Geometric Vector Proofs (Collinear points, parallel lines)",
+      "Ratio Vector Theorems and Divided Line Segments",
+      "Position Vectors and Geometric Midpoints"
+    ],
+    "3D Trigonometry & Geometry": [
+      "Pythagoras in 3D Solids (Diagonals of cuboids/pyramids)",
+      "Angle Between a Line and a Plane",
+      "Sine and Cosine Rules in 3D Spatial Contexts",
+      "Angles Between Two Planes",
+      "Truncated Cones and Pyramids Calculations"
+    ],
+    "Iteration & Advanced Calculus": [
+      "Iterative Methods for Approximating Roots of Equations (x_{n+1} = f(x_n))",
+      "Gradient of Curves & Tangents from First Principles / Graphically",
+      "Rates of Change from Non-Linear Graphs",
+      "Kinematic Graphs (Area under velocity-time graph, acceleration calculations)",
+      "Stationary Points and Curve Sketching Intro"
+    ]
+  }
+};
 
     // ==========================================
     // 3. APPLICATION STATE & CONTROLLER
