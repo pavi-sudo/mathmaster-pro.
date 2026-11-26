@@ -571,18 +571,36 @@ const curriculumData = {
           <div id="feedback-area" class="hidden p-4 rounded-xl text-sm"></div>
         </div>
       `;
+function generateRandomQuestion(subtopic) {
+    // Dynamic question generator mapped to your RGS subtopics
+    let q = `Work out the solution for ${subtopic}:`;
+    let a = "10";
+
+    if (subtopic.includes("Expanding Single Brackets")) {
+        const n = Math.floor(Math.random() * 5) + 2;
+        q = `Expand and simplify: ${n}(x + 4)`;
+        a = `${n}x+${n * 4}`;
+    } else if (subtopic.includes("Pythagoras")) {
+        q = "In a right-angled triangle, side a = 6 cm and side b = 8 cm. Find the hypotenuse c.";
+        a = "10";
+    } else if (subtopic.includes("Index Laws")) {
+        q = "Simplify using index laws: x^4 * x^3";
+        a = "x^7";
+    } else if (subtopic.includes("Quadratic")) {
+        q = "Solve x^2 + 5x + 6 = 0. Enter the smaller root:";
+        a = "-3";
+    } else {
+        const aVal = Math.floor(Math.random() * 8) + 2;
+        const bVal = Math.floor(Math.random() * 10) + 1;
+        q = `Evaluate for ${subtopic}: ${aVal}x + ${bVal} = ${aVal * 3 + bVal}`;
+        a = "3";
     }
 
-    function generateRandomQuestion(subtopic) {
-      // Dynamic question generator for grammar school problems
-      const a = Math.floor(Math.random() * 8) + 2;
-      const b = Math.floor(Math.random() * 10) + 1;
-      
-      return {
-        prompt: `Solve for x: ${a}x + ${b} = ${a * 3 + b}`,
-        answer: "3"
-      };
-    }
+    return {
+        prompt: q,
+        answer: a
+    };
+}
 
     window.submitAnswer = async function(correctAnswer, subtopic, year, genTopic) {
       const userAns = document.getElementById('user-answer').value.trim();
